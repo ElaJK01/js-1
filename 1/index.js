@@ -17,5 +17,5 @@ const solve = (...arr) => {
   return arr.map((el) => reduceElement(el));
 };
 
-
 console.log(solve(...first));
+
