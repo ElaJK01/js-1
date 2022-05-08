@@ -18,4 +18,3 @@ const solve = (...arr) => {
 };
 
 console.log(solve(...first));
-

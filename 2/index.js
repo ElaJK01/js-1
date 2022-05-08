@@ -7,37 +7,43 @@ const elementNames = (element) => {
 
 const namesList = flatten(first.map((el) => elementNames(el)));
 
-const delay = () => {
-  return new Promise((resolve) => setTimeout(resolve, Math.floor(Math.random() * 3000) + 1000) && console.log('waiting...'));
+const delay = async () => {
+  return new Promise((resolve) => setTimeout(resolve, Math.floor(Math.random() * 3000) + 1000));
 };
 
-const getPlayers = async (numberOfPlayers) => {
-  try {
+const getPlayers = (numberOfPlayers) => {
+  // try {
     const arr = Array.from({ length: numberOfPlayers }, (x, i) => i);
-    delay();
-    const players = arr.map(
-    ((el) => namesList[Math.floor(Math.random() * namesList.length)])
+    const players = arr.map((el) => namesList[Math.floor(Math.random() * namesList.length)]
     );
     return players;
-  } catch {
-    console.error("time is out");
-  }
+  // } catch {
+  //   console.error("time is out");
+  // }
 };
 
-const getTeams = async (numberOfPlayers, numberOfTeams) => {
-  try {
+
+const getTeams = (numberOfPlayers, numberOfTeams) => {
+  // try {
     const teamsArr = Array.from({ length: numberOfTeams }, (x, i) => i).map(
-    ((el) => [])
+      (el) => []
     );
-    const populateTeamsArr = await teamsArr.map((el) => {
-      getPlayers(numberOfPlayers);
-    });
-    return await populateTeamsArr.map((el) =>
-      el.map((i, x) => ({ name: i, score: Math.floor(Math.random() * 25) }))
+    // console.log('teamsArr', teamsArr)
+    // console.log('heare 3')
+
+    const populateTeamsArr = teamsArr.map((el) =>
+       getPlayers(numberOfPlayers)
     );
-  } catch {
-    console.error("no team, out of time");
-  };
+    // console.log('populateTeamsArr', populateTeamsArr)
+
+  const teams = populateTeamsArr.map(el => el.map((i, x) => ({name: i, score: Math.floor(Math.random() * 25)})))
+
+   console.log("teams", teams);
+
+    return teams;
+  // } catch {
+  //   console.error("no team, out of time");
+  // };
 
 };
 
@@ -56,17 +62,22 @@ const reduceElement = (firstElement) => {
 
 const getTeamSummaries = async (teamList) => {
   try {
-    const summary = await teamList.map((element) => reduceElement(element));
-    delay();
+    console.log('now 1')
+    const summary = await teamList.map(
+      (element) => reduceElement(element)
+    );
+    console.log('summary', summary)
+
+    console.log('now 2')
     return summary;
   } catch {
     console.error('no summary')
   }
 };
 
+//
+// console.log(getPlayers(500));
+//
+// console.log('getteams', getTeams(3, 3));
 
-console.log(getPlayers(500));
-
-console.log(getTeams(3, 3));
-
-console.log(getTeamSummaries(getTeams(500, 500)));
+console.log(getTeamSummaries(getTeams(5, 5)));
