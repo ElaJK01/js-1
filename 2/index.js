@@ -7,55 +7,59 @@ const elementNames = (element) => {
 
 const namesList = flatten(first.map((el) => elementNames(el)));
 
-const delay = async () => {
-  return new Promise((resolve) => setTimeout(resolve, Math.floor(Math.random() * 3000) + 1000));
+const delay = () => {
+  return new Promise((resolve) =>
+    setTimeout(resolve, Math.floor(Math.random() * 3000) + 1000)
+  );
 };
 
-const getPlayers = (numberOfPlayers) => {
-  // try {
+const getPlayers = async (numberOfPlayers) => {
+  try {
     const arr = Array.from({ length: numberOfPlayers }, (x, i) => i);
     const players = arr.map((el) => namesList[Math.floor(Math.random() * namesList.length)]
     );
+    // await delay();
+    console.log('players')
     return players;
-  // } catch {
-  //   console.error("time is out");
-  // }
+  } catch {
+    console.error("time is out");
+  }
 };
 
-
-const getTeams = (numberOfPlayers, numberOfTeams) => {
-  // try {
+const getTeams = async (numberOfPlayers, numberOfTeams) => {
+  try {
     const teamsArr = Array.from({ length: numberOfTeams }, (x, i) => i).map(
       (el) => []
     );
-    // console.log('teamsArr', teamsArr)
-    // console.log('heare 3')
+    console.log('teamsArr', teamsArr)
+    console.log('now 3');
 
-    const populateTeamsArr = teamsArr.map((el) =>
-       getPlayers(numberOfPlayers)
+    const populateTeamsArr = teamsArr.map(
+      (el) => getPlayers(numberOfPlayers)
     );
-    // console.log('populateTeamsArr', populateTeamsArr)
-
-  const teams = populateTeamsArr.map(el => el.map((i, x) => ({name: i, score: Math.floor(Math.random() * 25)})))
-
-   console.log("teams", teams);
-
+    await delay();
+    console.log('populateTeamsArr', populateTeamsArr);
+    const teams = populateTeamsArr.map((el) =>
+      el.map((i, x) => ({ name: i, score: Math.floor(Math.random() * 25) }))
+    );
+    await delay();
     return teams;
-  // } catch {
-  //   console.error("no team, out of time");
-  // };
+  } catch {
+    console.error("no team, out of time");
+  };
 
 };
 
-const reduceElement = (firstElement) => {
-  const arrValue = firstElement.map((el) => Object.values(el)).map((i) => i[1]);
+const reduceElement = (element) => {
+  const arrValue = element.map((el) => Object.values(el)).map((i) => i[1]);
   const reduceScore = arrValue.reduce((a, b) => a + b);
-  const namesList = firstElement
+  const namesList = element
     .map((el) => Object.values(el))
     .map((i) => i[0])
     .join(", ");
+
   return {
-    totalScore: reduceScore / firstElement.length,
+    totalScore: reduceScore / element.length,
     names: "Team: " + namesList,
   };
 };
@@ -63,9 +67,11 @@ const reduceElement = (firstElement) => {
 const getTeamSummaries = async (teamList) => {
   try {
     console.log('now 1')
-    const summary = await teamList.map(
+    await delay();
+    const summary = teamList.map(
       (element) => reduceElement(element)
     );
+
     console.log('summary', summary)
 
     console.log('now 2')
@@ -75,9 +81,8 @@ const getTeamSummaries = async (teamList) => {
   }
 };
 
-//
 // console.log(getPlayers(500));
 //
 // console.log('getteams', getTeams(3, 3));
 
-console.log(getTeamSummaries(getTeams(5, 5)));
+console.log(getTeamSummaries(await getTeams(5, 5)));
