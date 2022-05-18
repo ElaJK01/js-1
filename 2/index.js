@@ -1,42 +1,25 @@
 import { first } from "../data.js";
-import { flatten } from "ramda";
+import { flatten, includes } from "ramda";
+import { namesList, reducedScore } from "../helpers.js";
 
-const elementNames = (element) => {
-  return element.map((el) => Object.values(el)).map((i) => i[1]);
+const names = flatten(first.map((el) => namesList(el)));
+
+const shouldThrowError = () => {
+  const number = Math.floor(Math.random() * 10);
+  return number < 1;
 };
-
-const namesList = flatten(first.map((el) => elementNames(el)));
 
 const delay = () => {
   return new Promise((resolve, reject) =>
     setTimeout(
       () => (shouldThrowError() ? reject("network error") : resolve()),
-      3000
+      Math.floor(Math.random() * 2000) + 1000
     )
   );
 };
 
-const shouldThrowError = () => {
-  const number = Math.floor(Math.random() * 10);
-  number < 1 ? true : false;
-};
-
 const playersList = (arr) => {
-  return arr.map(() => namesList[Math.floor(Math.random() * namesList.length)]);
-};
-
-const reduceElement = (element) => {
-  const arrValue = element.map((el) => Object.values(el)).map((i) => i[1]);
-  const reduceScore = arrValue.reduce((a, b) => a + b);
-  const namesList = element
-    .map((el) => Object.values(el))
-    .map((i) => i[0])
-    .join(", ");
-
-  return {
-    averageScore: reduceScore / element.length,
-    names: "Team: " + namesList,
-  };
+  return arr.map(() => names[Math.floor(Math.random() * names.length)]);
 };
 
 const getPlayers = async (numberOfPlayers) => {
@@ -44,11 +27,12 @@ const getPlayers = async (numberOfPlayers) => {
     await delay();
     const arr = Array.from({ length: numberOfPlayers }, (x, i) => i);
     const players = await playersList(arr);
-    const result = players.map((el) => ({
-      name: el,
-      score: Math.floor(Math.random() * 25),
-    }));
-    return result;
+    if (!includes(undefined, players)) {
+      return players.map((el) => ({
+        name: el,
+        score: Math.floor(Math.random() * 25),
+      }));
+    }
   } catch (e) {
     console.error(e);
   }
@@ -63,10 +47,19 @@ const getTeams = async (numberOfPlayers, numberOfTeams) => {
     );
 
     await delay();
-    return arr;
+    if (!includes(undefined, arr)) {
+      return arr;
+    }
   } catch {
     console.error("no teams");
   }
+};
+
+const reduceElement = (element) => {
+  return {
+    averageScore: reducedScore(element) / element.length,
+    names: `Team: ${namesList(element).join(", ")}`,
+  };
 };
 
 const getTeamSummaries = async (teamList) => {
@@ -82,4 +75,4 @@ const getTeamSummaries = async (teamList) => {
 //
 console.log(await getTeams(5, 3));
 
-// console.log(await getTeamSummaries(await getTeams(5, 5)));
+// console.log(await getTeamSummaries(await getTeams(2, 3)));

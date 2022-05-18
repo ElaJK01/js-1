@@ -1,17 +1,10 @@
 import { first } from "../data.js";
-import namesList from "../helpers.js";
+import { namesList, reducedScore } from "../helpers.js";
 
 const reduceElement = (element) => {
-  const reducedScore = element
-    .map((el) => {
-      const { score } = el;
-      return score;
-    })
-    .reduce((previousScore, nextScore) => previousScore + nextScore);
-
   return {
-    totalScore: reducedScore,
-    names: `Team:  ${namesList(element)}`,
+    totalScore: reducedScore(element),
+    names: `Team:  ${namesList(element).join(", ")}`,
   };
 };
 
