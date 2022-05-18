@@ -1,20 +1,20 @@
 import { first } from "../data.js";
+import namesList from "../helpers.js";
 
-const reduceElement = (firstElement) => {
-  const arrValue = firstElement.map((el) => Object.values(el)).map((i) => i[0]);
-  const reduceScore = arrValue.reduce((a, b) => a + b);
-  const namesList = firstElement
-    .map((el) => Object.values(el))
-    .map((i) => i[1])
-    .join(", ");
+const reduceElement = (element) => {
+  const reducedScore = element
+    .map((el) => {
+      const { score } = el;
+      return score;
+    })
+    .reduce((previousScore, nextScore) => previousScore + nextScore);
+
   return {
-    totalScore: reduceScore,
-    names: "Team: " + namesList,
+    totalScore: reducedScore,
+    names: `Team:  ${namesList(element)}`,
   };
 };
 
-const solve = (...arr) => {
-  return arr.map((el) => reduceElement(el));
-};
+const solve = (...arr) => arr.map((el) => reduceElement(el));
 
 console.log(solve(...first));
