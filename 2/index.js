@@ -66,13 +66,13 @@ const getTeamSummaries = async (teamList) => {
   try {
     await delay();
     return teamList.map((element) => reduceElement(element));
-  } catch {
-    console.error("no summary");
+  } catch (e) {
+    console.error("no summary", e);
   }
 };
 
-// console.log(await getPlayers(3));
-//
+console.log(await getPlayers(3));
+
 console.log(await getTeams(5, 3));
 
-// console.log(await getTeamSummaries(await getTeams(2, 3)));
+console.log(await getTeamSummaries(await getTeams(2, 3)));
